@@ -13,7 +13,7 @@ data class User(
     @SerializedName("avatar_url")
     val avatarUrl: String,
     @SerializedName("id")
-    val id: Int,
+    val id: Long,
     @SerializedName("login")
     val login: String
 )
