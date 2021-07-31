@@ -1,6 +1,6 @@
 package com.aliftc12.githubuserfinder.domain.repository
 
-import com.aliftc12.githubuserfinder.domain.GithubUser
+import com.aliftc12.githubuserfinder.domain.model.GithubUser
 
 interface UserRepository {
    suspend fun searchUser(page: Int, query: String): List<GithubUser>
