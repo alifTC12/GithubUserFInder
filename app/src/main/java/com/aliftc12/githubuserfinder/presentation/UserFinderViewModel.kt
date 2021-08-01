@@ -27,17 +27,19 @@ class UserFinderViewModel(private val userRepository: UserRepository) : ViewMode
 
     fun searchUser(query: String) {
         currentPage = 1
-        _githubUsers.value = mutableListOf()
 
         viewModelScope.launch {
             _searchUserState.apply {
                 value = SearchUserState.Loading
-                value = when (val state = searchUser(page = 0, query = query)) {
+                value = when (val state = searchUser(page = 1, query = query)) {
                     is ResourceState.Error -> SearchUserState.Failed
                     is ResourceState.Success -> {
                         totalData = state.data.totalData
-                        _githubUsers += state.data.data
-                        SearchUserState.Succeed(state.data)
+                        if (totalData == 0) SearchUserState.HaveNoResult
+                        else {
+                            _githubUsers.value = state.data.data.toMutableList()
+                            SearchUserState.Succeed
+                        }
                     }
                 }
             }
@@ -60,9 +62,8 @@ class UserFinderViewModel(private val userRepository: UserRepository) : ViewMode
                     is ResourceState.Success -> {
                         currentPage += 1
 
-                        val githubUsers = state.data.data
-                        _githubUsers += githubUsers
-                        SearchUserState.LoadMoreState.Succeed(githubUsers)
+                        _githubUsers += state.data.data
+                        SearchUserState.LoadMoreState.Succeed
                     }
                 }
             }
@@ -75,8 +76,8 @@ class UserFinderViewModel(private val userRepository: UserRepository) : ViewMode
 
     private operator fun <T> MutableLiveData<MutableList<T>>.plusAssign(values: List<T>) {
         val value = this.value ?: mutableListOf()
-        value.addAll(values)
-        this.value = value
+//        value.addAll(values)
+        this.value = (value + values).toMutableList()
     }
 
 }
