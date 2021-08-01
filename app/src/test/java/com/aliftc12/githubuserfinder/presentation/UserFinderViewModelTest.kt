@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.aliftc12.githubuserfinder.CoroutineTestRule
 import com.aliftc12.githubuserfinder.domain.model.GithubUser
+import com.aliftc12.githubuserfinder.domain.model.GithubUsers
 import com.aliftc12.githubuserfinder.domain.model.PageMeta
 import com.aliftc12.githubuserfinder.domain.model.ResourceState
 import com.aliftc12.githubuserfinder.domain.repository.UserRepository
@@ -47,8 +48,7 @@ class UserFinderViewModelTest {
             )
         }
 
-        val observer =
-            mockk<Observer<MutableList<GithubUser>>>() { every { onChanged(any()) } just Runs }
+        val observer = mockk<Observer<GithubUsers>>() { every { onChanged(any()) } just Runs }
         viewModel.githubUsers.observeForever(observer)
 
         viewModel.searchUser("tono")
@@ -69,7 +69,7 @@ class UserFinderViewModelTest {
         }
 
         val observer =
-            mockk<Observer<MutableList<GithubUser>>>() { every { onChanged(any()) } just Runs }
+            mockk<Observer<GithubUsers>>() { every { onChanged(any()) } just Runs }
         viewModel.githubUsers.observeForever(observer)
 
         viewModel.searchUser("tono")
@@ -261,7 +261,7 @@ class UserFinderViewModelTest {
         }
 
         val observer =
-            mockk<Observer<MutableList<GithubUser>>>() { every { onChanged(any()) } just Runs }
+            mockk<Observer<GithubUsers>>() { every { onChanged(any()) } just Runs }
         viewModel.githubUsers.observeForever(observer)
 
         viewModel.searchUser("tono")

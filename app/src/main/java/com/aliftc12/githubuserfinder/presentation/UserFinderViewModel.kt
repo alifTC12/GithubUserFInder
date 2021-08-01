@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.aliftc12.githubuserfinder.domain.model.GithubUser
 import com.aliftc12.githubuserfinder.domain.model.GithubUsers
 import com.aliftc12.githubuserfinder.domain.model.PageMeta
 import com.aliftc12.githubuserfinder.domain.model.ResourceState
@@ -17,8 +16,8 @@ class UserFinderViewModel(private val userRepository: UserRepository) : ViewMode
     private var currentPage by Delegates.notNull<Int>()
     private var totalData by Delegates.notNull<Int>()
 
-    private val _githubUsers by lazy { MutableLiveData<MutableList<GithubUser>>() }
-    val githubUsers: LiveData<MutableList<GithubUser>>
+    private val _githubUsers by lazy { MutableLiveData<GithubUsers>() }
+    val githubUsers: LiveData<GithubUsers>
         get() = _githubUsers
 
     private val _searchUserState by lazy { MutableLiveData<SearchUserState>() }
@@ -74,10 +73,9 @@ class UserFinderViewModel(private val userRepository: UserRepository) : ViewMode
         return userRepository.searchUser(page, query)
     }
 
-    private operator fun <T> MutableLiveData<MutableList<T>>.plusAssign(values: List<T>) {
+    private operator fun <T> MutableLiveData<List<T>>.plusAssign(values: List<T>) {
         val value = this.value ?: mutableListOf()
-//        value.addAll(values)
-        this.value = (value + values).toMutableList()
+        this.value = value + values
     }
 
 }
