@@ -7,8 +7,10 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.aliftc12.githubuserfinder.databinding.ItemGithubUserBinding
 import com.aliftc12.githubuserfinder.domain.model.GithubUser
+import com.bumptech.glide.RequestManager
 
-class UserListAdapter : ListAdapter<GithubUser, RecyclerView.ViewHolder>(GithubUserDiffCallback) {
+class UserListAdapter(private val requestManager: RequestManager) :
+    ListAdapter<GithubUser, RecyclerView.ViewHolder>(GithubUserDiffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val view = ItemGithubUserBinding.inflate(layoutInflater, parent, false)
@@ -19,11 +21,12 @@ class UserListAdapter : ListAdapter<GithubUser, RecyclerView.ViewHolder>(GithubU
         (holder as GithubUserViewHolder).bind(getItem(position))
     }
 
-    private class GithubUserViewHolder(private val view: ItemGithubUserBinding) :
+    private inner class GithubUserViewHolder(private val view: ItemGithubUserBinding) :
         RecyclerView.ViewHolder(view.root) {
 
         fun bind(user: GithubUser) {
             view.usernameTv.text = user.username
+            requestManager.load(user.avatarUrl).into(view.avatarIv)
         }
     }
 }
