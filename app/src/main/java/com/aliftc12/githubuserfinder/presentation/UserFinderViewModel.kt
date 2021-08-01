@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aliftc12.githubuserfinder.domain.model.GithubUser
 import com.aliftc12.githubuserfinder.domain.model.GithubUsers
 import com.aliftc12.githubuserfinder.domain.model.PageMeta
 import com.aliftc12.githubuserfinder.domain.model.ResourceState
@@ -15,12 +16,18 @@ class UserFinderViewModel(private val userRepository: UserRepository) : ViewMode
 
     private var currentPage by Delegates.notNull<Int>()
     private var totalData by Delegates.notNull<Int>()
+
+    private val _githubUsers by lazy { MutableLiveData<MutableList<GithubUser>>() }
+    val githubUsers: LiveData<MutableList<GithubUser>>
+        get() = _githubUsers
+
     private val _searchUserState by lazy { MutableLiveData<SearchUserState>() }
     val searchUserState: LiveData<SearchUserState>
         get() = _searchUserState
 
     fun searchUser(query: String) {
         currentPage = 1
+        _githubUsers.value = mutableListOf()
 
         viewModelScope.launch {
             _searchUserState.apply {
@@ -29,6 +36,7 @@ class UserFinderViewModel(private val userRepository: UserRepository) : ViewMode
                     is ResourceState.Error -> SearchUserState.Failed
                     is ResourceState.Success -> {
                         totalData = state.data.totalData
+                        _githubUsers += state.data.data
                         SearchUserState.Succeed(state.data)
                     }
                 }
@@ -51,7 +59,10 @@ class UserFinderViewModel(private val userRepository: UserRepository) : ViewMode
                     is ResourceState.Error -> SearchUserState.LoadMoreState.Failed
                     is ResourceState.Success -> {
                         currentPage += 1
-                        SearchUserState.LoadMoreState.Succeed(state.data.data)
+
+                        val githubUsers = state.data.data
+                        _githubUsers += githubUsers
+                        SearchUserState.LoadMoreState.Succeed(githubUsers)
                     }
                 }
             }
@@ -60,6 +71,12 @@ class UserFinderViewModel(private val userRepository: UserRepository) : ViewMode
 
     private suspend fun searchUser(page: Int, query: String): ResourceState<PageMeta<GithubUsers>> {
         return userRepository.searchUser(page, query)
+    }
+
+    private operator fun <T> MutableLiveData<MutableList<T>>.plusAssign(values: List<T>) {
+        val value = this.value ?: mutableListOf()
+        value.addAll(values)
+        this.value = value
     }
 
 }
