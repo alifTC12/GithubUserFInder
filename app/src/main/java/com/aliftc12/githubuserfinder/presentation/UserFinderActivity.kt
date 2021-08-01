@@ -3,9 +3,11 @@ package com.aliftc12.githubuserfinder.presentation
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.aliftc12.githubuserfinder.databinding.ActivityUserFinderBinding
+import com.aliftc12.githubuserfinder.domain.LoadMoreStateAdapter
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -15,6 +17,7 @@ class UserFinderActivity : AppCompatActivity() {
     private lateinit var binding: ActivityUserFinderBinding
     private val viewModel: UserFinderViewModel by viewModel()
     private val userListAdapter: UserListAdapter by inject()
+    private val loadMoreStateAdapter: LoadMoreStateAdapter by inject()
 
     private val endlessLinearScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -48,17 +51,16 @@ class UserFinderActivity : AppCompatActivity() {
                 SearchUserState.Loading -> {
                 }
                 SearchUserState.Succeed -> {
+                    binding.userList.scrollToPosition(0)
                 }
                 SearchUserState.HaveNoResult -> {
                 }
 
-                SearchUserState.LoadMoreState.AllDataLoaded -> {
-                }
-                SearchUserState.LoadMoreState.Failed -> {
-                }
-                SearchUserState.LoadMoreState.Loading -> {
-                }
+                SearchUserState.LoadMoreState.AllDataLoaded,
+                SearchUserState.LoadMoreState.Failed,
+                SearchUserState.LoadMoreState.Loading,
                 SearchUserState.LoadMoreState.Succeed -> {
+                    loadMoreStateAdapter.submitState(state as SearchUserState.LoadMoreState)
                 }
             }
         }
@@ -71,7 +73,7 @@ class UserFinderActivity : AppCompatActivity() {
     private fun setupUi() = with(binding) {
         userList.apply {
             addOnScrollListener(endlessLinearScrollListener)
-            adapter = userListAdapter
+            adapter = ConcatAdapter(userListAdapter, loadMoreStateAdapter)
         }
         searchBtn.setOnClickListener {
             viewModel.searchUser(binding.inputEt.text.toString())
