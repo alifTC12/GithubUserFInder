@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.aliftc12.githubuserfinder.R
 import com.aliftc12.githubuserfinder.databinding.ItemGithubUserBinding
 import com.aliftc12.githubuserfinder.domain.model.GithubUser
 import com.bumptech.glide.RequestManager
@@ -26,7 +27,10 @@ class UserListAdapter(private val requestManager: RequestManager) :
 
         fun bind(user: GithubUser) {
             view.usernameTv.text = user.username
-            requestManager.load(user.avatarUrl).into(view.avatarIv)
+            requestManager
+                .load(user.avatarUrl)
+                .placeholder(R.drawable.ic_launcher_background)
+                .into(view.avatarIv)
         }
     }
 }
