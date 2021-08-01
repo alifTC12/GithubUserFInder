@@ -13,7 +13,7 @@ sealed class SearchUserState {
     sealed class LoadMoreState() : SearchUserState() {
         object Loading : LoadMoreState()
         object Failed : LoadMoreState()
-        data class Succeed(val user: GithubUsers) : LoadMoreState()
+        data class Succeed(val users: GithubUsers) : LoadMoreState()
         object AllDataLoaded : LoadMoreState()
     }
 }
