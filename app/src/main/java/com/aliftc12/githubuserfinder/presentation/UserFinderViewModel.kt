@@ -14,17 +14,10 @@ import kotlin.properties.Delegates
 class UserFinderViewModel(private val userRepository: UserRepository) : ViewModel() {
 
     private var currentPage by Delegates.notNull<Int>()
+    private var totalData by Delegates.notNull<Int>()
     private val _searchUserState by lazy { MutableLiveData<SearchUserState>() }
     val searchUserState: LiveData<SearchUserState>
         get() = _searchUserState
-
-    private val totalData: Int
-        get() {
-            val state = searchUserState.value
-
-            return if (state is SearchUserState.Succeed) state.pageMetaGithubUsers.totalData
-            else throw NullPointerException("total data yet to initialize")
-        }
 
     fun searchUser(query: String) {
         currentPage = 1
@@ -34,25 +27,32 @@ class UserFinderViewModel(private val userRepository: UserRepository) : ViewMode
                 value = SearchUserState.Loading
                 value = when (val state = searchUser(page = 0, query = query)) {
                     is ResourceState.Error -> SearchUserState.Failed
-                    is ResourceState.Success -> SearchUserState.Succeed(state.data)
+                    is ResourceState.Success -> {
+                        totalData = state.data.totalData
+                        SearchUserState.Succeed(state.data)
+                    }
                 }
             }
         }
     }
 
     fun loadMoreUser(query: String, amountCurrentUser: Int) {
+        if (searchUserState.value !is SearchUserState.Succeed && searchUserState.value !is SearchUserState.LoadMoreState.Succeed) return
+
         if (amountCurrentUser >= totalData) {
             _searchUserState.value = SearchUserState.LoadMoreState.AllDataLoaded
             return
         }
 
-        currentPage += 1
         viewModelScope.launch {
             _searchUserState.apply {
                 value = SearchUserState.LoadMoreState.Loading
-                value = when (val state = searchUser(currentPage, query)) {
+                value = when (val state = searchUser(currentPage + 1, query)) {
                     is ResourceState.Error -> SearchUserState.LoadMoreState.Failed
-                    is ResourceState.Success -> SearchUserState.LoadMoreState.Succeed(state.data.data)
+                    is ResourceState.Success -> {
+                        currentPage += 1
+                        SearchUserState.LoadMoreState.Succeed(state.data.data)
+                    }
                 }
             }
         }
