@@ -9,6 +9,6 @@ interface UserService {
     @GET("search/users")
     suspend fun searchUser(
         @Query("page") page: Int,
-        @Query("query") query: String,
+        @Query("q") query: String,
     ): Response<SearchUserResponse>
 }
