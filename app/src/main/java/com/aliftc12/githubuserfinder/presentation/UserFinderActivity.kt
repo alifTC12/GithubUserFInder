@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.aliftc12.githubuserfinder.R
 import com.aliftc12.githubuserfinder.databinding.ActivityUserFinderBinding
-import com.aliftc12.githubuserfinder.domain.LoadMoreStateAdapter
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

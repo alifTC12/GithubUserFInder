@@ -4,8 +4,8 @@ import com.aliftc12.githubuserfinder.data.BaseUrl
 import com.aliftc12.githubuserfinder.data.mapper.SearchUserResponseToGithubUsersMapper
 import com.aliftc12.githubuserfinder.data.repository.UserRepositoryImpl
 import com.aliftc12.githubuserfinder.data.service.UserService
-import com.aliftc12.githubuserfinder.domain.LoadMoreStateAdapter
 import com.aliftc12.githubuserfinder.domain.repository.UserRepository
+import com.aliftc12.githubuserfinder.presentation.LoadMoreStateAdapter
 import com.aliftc12.githubuserfinder.presentation.UserFinderViewModel
 import com.aliftc12.githubuserfinder.presentation.UserListAdapter
 import com.bumptech.glide.Glide

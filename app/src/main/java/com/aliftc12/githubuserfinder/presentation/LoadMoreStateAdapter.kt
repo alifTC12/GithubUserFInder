@@ -1,7 +1,7 @@
-package com.aliftc12.githubuserfinder.domain
+package com.aliftc12.githubuserfinder.presentation
 
 import android.view.LayoutInflater
-import android.view.View.GONE
+import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -37,27 +37,27 @@ class LoadMoreStateAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun bind(state: LoadMoreState?): Unit = with(view) {
             when (state) {
                 LoadMoreState.AllDataLoaded -> {
-                    progressBar.visibility = GONE
+                    progressBar.visibility = INVISIBLE
                     allLoadedTv.visibility = VISIBLE
-                    tryAgainTv.visibility = GONE
+                    tryAgainTv.visibility = INVISIBLE
                 }
                 LoadMoreState.Failed -> {
-                    progressBar.visibility = GONE
-                    allLoadedTv.visibility = GONE
+                    progressBar.visibility = INVISIBLE
+                    allLoadedTv.visibility = INVISIBLE
                     tryAgainTv.visibility = VISIBLE
 
                     view.tryAgainTv.setOnClickListener { listener?.retryLoadMore() }
                 }
                 LoadMoreState.Loading -> {
                     progressBar.visibility = VISIBLE
-                    allLoadedTv.visibility = GONE
-                    tryAgainTv.visibility = GONE
+                    allLoadedTv.visibility = INVISIBLE
+                    tryAgainTv.visibility = INVISIBLE
                 }
                 null,
                 LoadMoreState.Succeed -> {
-                    progressBar.visibility = GONE
-                    allLoadedTv.visibility = GONE
-                    tryAgainTv.visibility = GONE
+                    progressBar.visibility = INVISIBLE
+                    allLoadedTv.visibility = INVISIBLE
+                    tryAgainTv.visibility = INVISIBLE
                 }
             }
         }
