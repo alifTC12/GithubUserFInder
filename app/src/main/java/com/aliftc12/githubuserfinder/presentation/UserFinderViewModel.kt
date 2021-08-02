@@ -47,8 +47,13 @@ class UserFinderViewModel(private val userRepository: UserRepository) : ViewMode
         }
     }
 
+    fun retryLoadMoreUser() { loadMoreUser(currentQuery, Int.MIN_VALUE) }
+
     fun loadMoreUser(query: String = currentQuery, amountCurrentUser: Int) {
-        if (searchUserState.value !is SearchUserState.Succeed && searchUserState.value !is SearchUserState.LoadMoreState.Succeed) return
+        if (searchUserState.value !is SearchUserState.Succeed
+            && searchUserState.value !is SearchUserState.LoadMoreState.Succeed
+            && searchUserState.value !is SearchUserState.LoadMoreState.Failed
+        ) return
 
         if (amountCurrentUser >= totalData) {
             _searchUserState.value = SearchUserState.LoadMoreState.AllDataLoaded

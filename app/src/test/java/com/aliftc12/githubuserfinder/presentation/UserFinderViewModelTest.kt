@@ -154,7 +154,7 @@ class UserFinderViewModelTest {
     }
 
     @Test
-    fun `repository not invoked because previous state is not Succeed or LoadMoreState_Succeed`() {
+    fun `repository not invoked because previous state is not Succeed or LoadMoreState_Succeed or LoadMoreState_Failed`() {
         val observer =
             mockk<Observer<SearchUserState>>() { every { onChanged(any()) } just Runs }
         viewModel.searchUserState.observeForever(observer)

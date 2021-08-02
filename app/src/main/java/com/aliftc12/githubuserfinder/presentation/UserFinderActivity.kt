@@ -18,7 +18,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 private const val VISIBLE_THRESHOLD = 2
 
-class UserFinderActivity : AppCompatActivity() {
+class UserFinderActivity : AppCompatActivity(),
+    LoadMoreStateAdapter.LoadMoreStateAdapterInteraction {
     private lateinit var binding: ActivityUserFinderBinding
     private val viewModel: UserFinderViewModel by viewModel()
     private val userListAdapter: UserListAdapter by inject()
@@ -45,6 +46,11 @@ class UserFinderActivity : AppCompatActivity() {
 
         setUpObserver()
         setupUi()
+    }
+
+
+    override fun retryLoadMore() {
+        viewModel.retryLoadMoreUser()
     }
 
     private fun setUpObserver() {
@@ -96,6 +102,7 @@ class UserFinderActivity : AppCompatActivity() {
             addOnScrollListener(endlessLinearScrollListener)
             adapter = ConcatAdapter(userListAdapter, loadMoreStateAdapter)
         }
+        loadMoreStateAdapter.setListener(this@UserFinderActivity)
         retryTv.setOnClickListener { viewModel.searchUser() }
         searchBtn.setOnClickListener { viewModel.searchUser(binding.inputEt.text.toString()) }
         binding.inputEt.addTextChangedListener(object : TextWatcher {

@@ -10,6 +10,7 @@ import com.aliftc12.githubuserfinder.presentation.SearchUserState.LoadMoreState
 
 class LoadMoreStateAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var state: LoadMoreState? = null
+    private var listener: LoadMoreStateAdapterInteraction? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -20,6 +21,10 @@ class LoadMoreStateAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     fun submitState(state: LoadMoreState) {
         this.state = state
         notifyDataSetChanged()
+    }
+
+    fun setListener(listener: LoadMoreStateAdapterInteraction) {
+        this.listener = listener
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -40,6 +45,8 @@ class LoadMoreStateAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     progressBar.visibility = GONE
                     allLoadedTv.visibility = GONE
                     tryAgainTv.visibility = VISIBLE
+
+                    view.tryAgainTv.setOnClickListener { listener?.retryLoadMore() }
                 }
                 LoadMoreState.Loading -> {
                     progressBar.visibility = VISIBLE
@@ -58,5 +65,9 @@ class LoadMoreStateAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun getItemCount(): Int {
         return if (state == null) 0 else 1
+    }
+
+    interface LoadMoreStateAdapterInteraction {
+        fun retryLoadMore()
     }
 }
