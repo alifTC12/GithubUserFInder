@@ -15,14 +15,17 @@ class UserListAdapter(private val requestManager: RequestManager) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val view = ItemGithubUserBinding.inflate(layoutInflater, parent, false)
-        return GithubUserViewHolder(view)
+        return GithubUserViewHolder(view, requestManager)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         (holder as GithubUserViewHolder).bind(getItem(position))
     }
 
-    private inner class GithubUserViewHolder(private val view: ItemGithubUserBinding) :
+    private class GithubUserViewHolder(
+        private val view: ItemGithubUserBinding,
+        private val requestManager: RequestManager
+    ) :
         RecyclerView.ViewHolder(view.root) {
 
         fun bind(user: GithubUser) {

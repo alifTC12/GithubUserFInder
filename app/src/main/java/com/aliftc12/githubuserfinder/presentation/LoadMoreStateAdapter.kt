@@ -15,7 +15,7 @@ class LoadMoreStateAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val view = ItemStateLoadMoreBinding.inflate(layoutInflater, parent, false)
-        return LoadMoreViewHolder(view)
+        return LoadMoreViewHolder(view, listener)
     }
 
     fun submitState(state: LoadMoreState) {
@@ -31,7 +31,10 @@ class LoadMoreStateAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         (holder as LoadMoreViewHolder).bind(state)
     }
 
-    private inner class LoadMoreViewHolder(private val view: ItemStateLoadMoreBinding) :
+    private class LoadMoreViewHolder(
+        private val view: ItemStateLoadMoreBinding,
+        private val listener: LoadMoreStateAdapterInteraction?
+    ) :
         RecyclerView.ViewHolder(view.root) {
 
         fun bind(state: LoadMoreState?): Unit = with(view) {
