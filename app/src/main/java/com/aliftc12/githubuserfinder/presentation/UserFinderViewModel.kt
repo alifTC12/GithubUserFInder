@@ -15,6 +15,7 @@ class UserFinderViewModel(private val userRepository: UserRepository) : ViewMode
 
     private var currentPage by Delegates.notNull<Int>()
     private var totalData by Delegates.notNull<Int>()
+    private var currentQuery = ""
 
     private val _githubUsers by lazy { MutableLiveData<GithubUsers>() }
     val githubUsers: LiveData<GithubUsers>
@@ -24,8 +25,9 @@ class UserFinderViewModel(private val userRepository: UserRepository) : ViewMode
     val searchUserState: LiveData<SearchUserState>
         get() = _searchUserState
 
-    fun searchUser(query: String) {
+    fun searchUser(query: String = currentQuery) {
         currentPage = 1
+        currentQuery = query
 
         viewModelScope.launch {
             _searchUserState.apply {
@@ -45,7 +47,7 @@ class UserFinderViewModel(private val userRepository: UserRepository) : ViewMode
         }
     }
 
-    fun loadMoreUser(query: String, amountCurrentUser: Int) {
+    fun loadMoreUser(query: String = currentQuery, amountCurrentUser: Int) {
         if (searchUserState.value !is SearchUserState.Succeed && searchUserState.value !is SearchUserState.LoadMoreState.Succeed) return
 
         if (amountCurrentUser >= totalData) {

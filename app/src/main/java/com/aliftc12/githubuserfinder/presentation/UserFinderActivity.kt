@@ -33,7 +33,7 @@ class UserFinderActivity : AppCompatActivity() {
             val totalCurrentItem = layoutManager.itemCount
 
             if (lastVisibleItemPosition + VISIBLE_THRESHOLD > totalCurrentItem) {
-                viewModel.loadMoreUser(binding.inputEt.text.toString(), totalCurrentItem)
+                viewModel.loadMoreUser(amountCurrentUser = totalCurrentItem)
             }
         }
     }
@@ -96,7 +96,7 @@ class UserFinderActivity : AppCompatActivity() {
             addOnScrollListener(endlessLinearScrollListener)
             adapter = ConcatAdapter(userListAdapter, loadMoreStateAdapter)
         }
-        retryTv.setOnClickListener { viewModel.searchUser(binding.inputEt.text.toString()) }
+        retryTv.setOnClickListener { viewModel.searchUser() }
         searchBtn.setOnClickListener { viewModel.searchUser(binding.inputEt.text.toString()) }
         binding.inputEt.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
