@@ -1,11 +1,14 @@
 package com.aliftc12.githubuserfinder.presentation
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.aliftc12.githubuserfinder.R
 import com.aliftc12.githubuserfinder.databinding.ActivityUserFinderBinding
 import com.aliftc12.githubuserfinder.domain.LoadMoreStateAdapter
 import org.koin.android.ext.android.inject
@@ -46,14 +49,16 @@ class UserFinderActivity : AppCompatActivity() {
         viewModel.searchUserState.observe(this) { state ->
             Log.d("searchUserState", state.toString())
             when (state) {
-                SearchUserState.Failed -> {
-                }
                 SearchUserState.Loading -> {
+                    binding.inputLayout.error = null
+                }
+                SearchUserState.Failed -> {
                 }
                 SearchUserState.Succeed -> {
                     binding.userList.scrollToPosition(0)
                 }
                 SearchUserState.HaveNoResult -> {
+                    binding.inputLayout.error = getString(R.string.msg_search_no_result)
                 }
 
                 SearchUserState.LoadMoreState.AllDataLoaded,
@@ -78,5 +83,17 @@ class UserFinderActivity : AppCompatActivity() {
         searchBtn.setOnClickListener {
             viewModel.searchUser(binding.inputEt.text.toString())
         }
+        binding.inputEt.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                if (!s.isNullOrEmpty()) binding.inputLayout.error = null
+            }
+
+        })
     }
 }
