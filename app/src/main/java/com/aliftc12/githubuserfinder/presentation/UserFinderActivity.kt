@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -51,13 +53,27 @@ class UserFinderActivity : AppCompatActivity() {
             when (state) {
                 SearchUserState.Loading -> {
                     binding.inputLayout.error = null
+                    binding.progressBar.visibility = VISIBLE
+                    binding.userList.visibility = GONE
+                    binding.retryTv.visibility = GONE
                 }
                 SearchUserState.Failed -> {
+                    binding.progressBar.visibility = GONE
+                    binding.userList.visibility = GONE
+                    binding.retryTv.visibility = VISIBLE
                 }
                 SearchUserState.Succeed -> {
+                    binding.progressBar.visibility = GONE
+                    binding.userList.visibility = VISIBLE
+                    binding.retryTv.visibility = GONE
+
                     binding.userList.scrollToPosition(0)
                 }
                 SearchUserState.HaveNoResult -> {
+                    binding.progressBar.visibility = GONE
+                    binding.userList.visibility = GONE
+                    binding.retryTv.visibility = GONE
+
                     binding.inputLayout.error = getString(R.string.msg_search_no_result)
                 }
 
@@ -80,9 +96,8 @@ class UserFinderActivity : AppCompatActivity() {
             addOnScrollListener(endlessLinearScrollListener)
             adapter = ConcatAdapter(userListAdapter, loadMoreStateAdapter)
         }
-        searchBtn.setOnClickListener {
-            viewModel.searchUser(binding.inputEt.text.toString())
-        }
+        retryTv.setOnClickListener { viewModel.searchUser(binding.inputEt.text.toString()) }
+        searchBtn.setOnClickListener { viewModel.searchUser(binding.inputEt.text.toString()) }
         binding.inputEt.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
